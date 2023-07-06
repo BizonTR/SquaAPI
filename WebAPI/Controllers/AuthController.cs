@@ -42,6 +42,13 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("getById")]
+        public ActionResult GetUserByID(string id)
+        {
+            var result = _userManager.Users.FirstOrDefault(u => u.Id == id);
+            return Ok(result);
+        }
+
         [HttpPost("delete")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -72,6 +79,17 @@ namespace WebAPI.Controllers
             var result = await _authorizationService.Login(model);
 
             return Ok(result);
+        }
+
+        [HttpPut("updateSilverAndGold")]
+        public async Task<IActionResult> UpdateSilverAndGold([FromBody] UpdateSilverAndGoldModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            user.SilverAmount += model.SilverAmount;
+            user.GoldAmount += model.GoldAmount;
+            await _userManager.UpdateAsync(user);
+
+            return Ok(user);
         }
     }
 }
